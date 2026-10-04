@@ -214,18 +214,36 @@ const participant_info = {
     </div>
   `,
   button_label: 'Begin / 開始',
-  on_finish: function (data) {
+on_finish: function (data) {
     const responses = data.response;
 
     // Handle withdrawal / declined consent immediately
     if (responses.consent === 'declined') {
-      jsPsych.endExperiment(`
-        <div style="max-width: 600px; margin: 40px auto; font-family: sans-serif; line-height: 1.6; text-align: center;">
-          <h3>Study Exited / 已終止參與</h3>
-          <p>You have chosen not to participate in this study. No data has been recorded.</p>
-          <p>您已選擇不參與本研究，系統未記錄任何資料。您可以直接關閉此視窗。</p>
+      const exitHTML = `
+        <div style="max-width: 600px; margin: 80px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; text-align: center; color: #2d3748; padding: 20px;">
+          <h2 style="font-size: 1.4rem; margin-bottom: 16px; color: #1a202c;">
+            Study Exited / 已終止參與
+          </h2>
+          <p style="font-size: 1.05rem; margin-bottom: 8px;">
+            Thank you for your time.
+          </p>
+          <p style="font-size: 1.05rem; color: #4a5568; margin-bottom: 20px;">
+            感謝您抽出時間。
+          </p>
+          <p style="font-size: 0.9rem; color: #718096;">
+            You have chosen not to participate in this study. No data has been collected.<br>
+            您已選擇不參與本研究，系統未記錄任何資料。您可以直接關閉此分頁。
+          </p>
         </div>
-      `);
+      `;
+
+      // Guarantee the message renders directly on screen
+      const display = jsPsych.getDisplayElement();
+      if (display) {
+        display.innerHTML = exitHTML;
+      }
+
+      jsPsych.endExperiment(exitHTML);
       return;
     }
 
