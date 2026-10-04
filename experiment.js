@@ -200,11 +200,14 @@ const video_trial = {
   type: jsPsychHtmlButtonResponse,
   stimulus: function() {
     return `
-      <div style="max-width: 760px; margin: 0 auto;">
-        <video id="stimulus-video" width="100%" controls playsinline autoplay>
+      <div style="max-width: 760px; margin: 0 auto; text-align: center; font-family: sans-serif;">
+        <video id="stimulus-video" width="100%" controls playsinline preload="metadata">
           <source src="${videoSrc}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+          Click the play button (▶) above to start the video. / 請點擊上方播放按鈕開始觀看。
+        </p>
       </div>
     `;
   },
