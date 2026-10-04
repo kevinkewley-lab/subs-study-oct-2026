@@ -347,19 +347,37 @@ timeline.push(audio_procedure);
 // 6. DataPipe Save & Completion Screen
 // ==========================================
 
-// Safely detect the DataPipe plugin regardless of how the CDN exposed it
+// Safely resolve the plugin
 const pipePlugin = (typeof jsPsychPipe !== 'undefined')
   ? jsPsychPipe
-  : (window.jsPsychPipe || window['@jspsych-community/plugin-pipe'] || window.pipe);
+  : (window.jsPsychPipe || window['@jspsych-community/plugin-pipe']);
 
-const save_data = {
-  type: pipePlugin,
-  action: "save",
-  experiment_id: "Dkh9QFetwDLM",
-  filename: filename,
-  data_string: () => jsPsych.data.get().csv()
-};
-timeline.push(save_data);
+if (pipePlugin) {
+  const save_data = {
+    type: pipePlugin,
+    action: "save",
+    experiment_id: "Dkh9QFetwDLM",
+    filename: filename,
+    data_string: () => jsPsych.data.get().csv()
+  };
+  timeline.push(save_data);
+} else {
+  console.warn("DataPipe plugin not found on window. Adding local fallback save.");
+  const local_save = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: 0 auto; font-family: sans-serif; line-height: 1.6;">
+        <p>Your experiment data is ready. Please click the button below to download your data file.</p>
+        <p>您的資料已準備好，請點擊下方按鈕下載資料檔。</p>
+      </div>
+    `,
+    choices: ['Download Data / 下載資料'],
+    on_finish: function() {
+      jsPsych.data.get().localSave('csv', filename);
+    }
+  };
+  timeline.push(local_save);
+}
 
 const debrief = {
   type: jsPsychHtmlButtonResponse,
