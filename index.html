@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Loading Experiment...</title>
+  <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
+  <script>
+    async function assignCondition() {
+      const experimentID = "YOUR_DATAPIPE_EXPERIMENT_ID";
+
+      try {
+        // DataPipe returns 0 or 1 sequentially to balance groups
+        const condition = await jsPsychPipe.getCondition(experimentID);
+        
+        const target = condition === 0 ? "english.html" : "chinese.html";
+        const currentParams = window.location.search;
+
+        window.location.replace(target + currentParams);
+      } catch (error) {
+        // Fallback to random if there is any network issue fetching the count
+        console.error("DataPipe counter error, falling back to random:", error);
+        const fallbackTarget = Math.random() < 0.5 ? "english.html" : "chinese.html";
+        window.location.replace(fallbackTarget + window.location.search);
+      }
+    }
+
+    assignCondition();
+  </script>
+</head>
+<body>
+  <p>Assigning session, please wait...</p>
+</body>
+</html>

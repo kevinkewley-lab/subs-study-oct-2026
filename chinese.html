@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Linguistic Study</title>
+
+  <!-- Core jsPsych 8 -->
+  <script src="https://unpkg.com/jspsych@8.0.0"></script>
+  <link href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+
+  <!-- Required Plugins -->
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.0.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-audio-button-response@2.0.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@2.0.0"></script>
+
+  <!-- DataPipe Plugin for jsPsych 8 -->
+  <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe@0.4.0"></script>
+</head>
+<body>
+  <!-- English condition setup -->
+  <script>
+    window.EXPERIMENT_CONDITION = 'chinese';
+    window.VIDEO_SOURCE = 'media/main_video_CHINESE';
+  </script>
+  <script src="experiment.js"></script>
+</body>
+</html>
