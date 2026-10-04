@@ -344,53 +344,80 @@ const audio_procedure = {
 timeline.push(audio_procedure);
 
 // ==========================================
-// 6. DataPipe Save & Completion Screen
+// 6. Direct DataPipe Transmission & Debrief
 // ==========================================
-
-// Safely resolve the plugin
-const pipePlugin = (typeof jsPsychPipe !== 'undefined')
-  ? jsPsychPipe
-  : (window.jsPsychPipe || window['@jspsych-community/plugin-pipe']);
-
-if (pipePlugin) {
-  const save_data = {
-    type: pipePlugin,
-    action: "save",
-    experiment_id: "Dkh9QFetwDLM",
-    filename: filename,
-    data_string: () => jsPsych.data.get().csv()
-  };
-  timeline.push(save_data);
-} else {
-  console.warn("DataPipe plugin not found on window. Adding local fallback save.");
-  const local_save = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: `
-      <div style="max-width: 600px; margin: 0 auto; font-family: sans-serif; line-height: 1.6;">
-        <p>Your experiment data is ready. Please click the button below to download your data file.</p>
-        <p>您的資料已準備好，請點擊下方按鈕下載資料檔。</p>
-      </div>
-    `,
-    choices: ['Download Data / 下載資料'],
-    on_finish: function() {
-      jsPsych.data.get().localSave('csv', filename);
-    }
-  };
-  timeline.push(local_save);
-}
-
-const debrief = {
+const save_and_debrief = {
   type: jsPsychHtmlButtonResponse,
-  stimulus: `
-    <div style="max-width: 600px; margin: 0 auto; font-family: sans-serif; line-height: 1.6;">
-      <h2>Experiment Completed / 實驗結束</h2>
-      <p>Thank you for your participation. Your responses have been saved.</p>
-      <p>感謝您的參與，受試資料已成功送出。</p>
-    </div>
-  `,
-  choices: ['Finish / 結束']
+  stimulus: function() {
+    return `
+      <div style="max-width: 600px; margin: 0 auto; font-family: sans-serif; line-height: 1.6; text-align: center;">
+        <h2>Submitting Data / 資料傳送中...</h2>
+        <p id="upload-status" style="color: #555;">Please wait while your responses are being saved.</p>
+      </div>
+    `;
+  },
+  choices: ['Finish / 結束'],
+  on_load: function() {
+    // Hide the finish button until the data upload finishes
+    const finishBtn = document.querySelector('.jspsych-btn');
+    if (finishBtn) finishBtn.style.display = 'none';
+
+    const csvData = jsPsych.data.get().csv();
+
+    // Direct HTTP POST to DataPipe API
+    fetch("https://pipe.jspsych.org/api/data/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "*/*",
+      },
+      body: JSON.stringify({
+        experimentID: "Dkh9QFetwDLM",
+        filename: filename,
+        data: csvData
+      })
+    })
+    .then(response => {
+      const statusEl = document.getElementById('upload-status');
+      if (response.ok) {
+        if (statusEl) {
+          statusEl.innerHTML = `
+            <span style="color: #28a745; font-weight: bold; font-size: 1.1rem;">
+              ✓ Data submitted successfully! / 資料已成功送出！
+            </span><br><br>
+            Thank you for participating. You may now close this window.
+          `;
+        }
+      } else {
+        if (statusEl) {
+          statusEl.innerHTML = `
+            <span style="color: #d9534f; font-weight: bold;">
+              ⚠ Online submission failed.
+            </span><br>
+            Please click below to download your data file manually.
+          `;
+          jsPsych.data.get().localSave('csv', filename);
+        }
+      }
+      if (finishBtn) finishBtn.style.display = 'inline-block';
+    })
+    .catch(error => {
+      console.error("DataPipe Error:", error);
+      const statusEl = document.getElementById('upload-status');
+      if (statusEl) {
+        statusEl.innerHTML = `
+          <span style="color: #d9534f; font-weight: bold;">
+            ⚠ Transmission error.
+          </span><br>
+          Downloading data file locally as backup...
+        `;
+      }
+      jsPsych.data.get().localSave('csv', filename);
+      if (finishBtn) finishBtn.style.display = 'inline-block';
+    });
+  }
 };
-timeline.push(debrief);
+timeline.push(save_and_debrief);
 
 // Run the experiment
 jsPsych.run(timeline);
