@@ -1,14 +1,16 @@
-// Initialize jsPsych
+// ==========================================
+// 0. Initialize jsPsych & Participant Data
+// ==========================================
 const jsPsych = initJsPsych({
   on_finish: function () {
-    // Optional backup: locally downloads a copy to the user's browser
-    // You can keep or delete this line depending on your preference
+    // Optional fallback: downloads data locally if pipeline fails
     // jsPsych.data.get().localSave('csv', filename);
   }
 });
 
 // Identify participant and condition
 const conditionTag = window.EXPERIMENT_CONDITION || 'default';
+const videoSrc = window.VIDEO_SOURCE || 'media/main_video.mp4';
 const subject_id = jsPsych.randomization.randomID(10);
 const filename = `${conditionTag}_${subject_id}.csv`;
 
@@ -18,11 +20,45 @@ jsPsych.data.addProperties({
   condition: conditionTag
 });
 
-// Create master timeline
 const timeline = [];
 
 // ==========================================
-// 1. Participant Details Form
+// 1. Audio Items Configuration (16 Stimuli)
+// ==========================================
+const audio_items = [
+  // Real Words (1–8)
+  { audio: 'media/audio/excerpt_1_capsule.mp3',  item_id: 1,  target_word: 'capsule',  word_type: 'real',        in_video: true },
+  { audio: 'media/audio/excerpt_2_plans.mp3',    item_id: 2,  target_word: 'plans',    word_type: 'real',        in_video: true },
+  { audio: 'media/audio/excerpt_3_engineer.mp3', item_id: 3,  target_word: 'engineer', word_type: 'real',        in_video: true },
+  { audio: 'media/audio/excerpt_4_space.mp3',    item_id: 4,  target_word: 'space',    word_type: 'real',        in_video: true },
+  { audio: 'media/audio/excerpt_5_base.mp3',     item_id: 5,  target_word: 'base',     word_type: 'real',        in_video: false },
+  { audio: 'media/audio/excerpt_6_star.mp3',     item_id: 6,  target_word: 'star',     word_type: 'real',        in_video: false },
+  { audio: 'media/audio/excerpt_7_office.mp3',   item_id: 7,  target_word: 'office',   word_type: 'real',        in_video: false },
+  { audio: 'media/audio/excerpt_8_screen.mp3',   item_id: 8,  target_word: 'screen',   word_type: 'real',        in_video: false },
+
+  // Pseudowords (9–16)
+  { audio: 'media/audio/excerpt_9_vord.mp3',     item_id: 9,  target_word: 'vord',     word_type: 'pseudoword',  in_video: true },
+  { audio: 'media/audio/excerpt_10_ozrek.mp3',   item_id: 10, target_word: 'ozrek',    word_type: 'pseudoword',  in_video: true },
+  { audio: 'media/audio/excerpt_11_florns.mp3',  item_id: 11, target_word: 'florns',   word_type: 'pseudoword',  in_video: true },
+  { audio: 'media/audio/excerpt_12_nemvo.mp3',   item_id: 12, target_word: 'nemvo',    word_type: 'pseudoword',  in_video: true },
+  { audio: 'media/audio/excerpt_13_onk.mp3',     item_id: 13, target_word: 'onk',      word_type: 'pseudoword',  in_video: false },
+  { audio: 'media/audio/excerpt_14_nuggy.mp3',   item_id: 14, target_word: 'nuggy',    word_type: 'pseudoword',  in_video: false },
+  { audio: 'media/audio/excerpt_15_vulling.mp3', item_id: 15, target_word: 'vulling',  word_type: 'pseudoword',  in_video: false },
+  { audio: 'media/audio/excerpt_16_frask.mp3',   item_id: 16, target_word: 'frask',    word_type: 'pseudoword',  in_video: false }
+];
+
+// Preload stimuli
+const preload = {
+  type: jsPsychPreload,
+  video: [videoSrc],
+  audio: audio_items.map(item => item.audio),
+  message: '<p style="font-family: sans-serif;">Loading multimedia resources... Please wait.</p>',
+  error_message: '<p style="font-family: sans-serif; color: red;">Failed to load resources. Please refresh the page and check your connection.</p>'
+};
+timeline.push(preload);
+
+// ==========================================
+// 2. Participant Details Form
 // ==========================================
 const participant_info = {
   type: jsPsychSurveyHtmlForm,
@@ -140,15 +176,17 @@ const participant_info = {
 timeline.push(participant_info);
 
 // ==========================================
-// 2. Instructions Screen
+// 3. Instructions Screen
 // ==========================================
 const instructions = {
   type: jsPsychHtmlButtonResponse,
   stimulus: `
     <div style="max-width: 700px; margin: 0 auto; line-height: 1.6; text-align: left; font-family: sans-serif;">
       <h2 style="text-align: center;">Instructions / 實驗說明</h2>
-      <p>1. You will watch a short video. Please pay close attention to the spoken dialogue and content.</p>
-      <p>2. Following the video, you will listen to 13 short audio excerpts.</p>
+      <p>1. You will watch a short video. Please pay close attention to both visual content and spoken dialogue.</p>
+      <p>2. Following the video, you will listen to <strong>16 short audio excerpts</strong>.</p>
+      <p>3. For each excerpt, you may listen up to <strong>2 times maximum</strong> and answer two questions regarding the key word.</p>
+      <p>Please make sure your audio is enabled and clear.</p>
     </div>
   `,
   choices: ['Start Video / 開始觀看影片']
@@ -156,15 +194,14 @@ const instructions = {
 timeline.push(instructions);
 
 // ==========================================
-// 3. Video Presentation
+// 4. Video Presentation
 // ==========================================
 const video_trial = {
   type: jsPsychHtmlButtonResponse,
   stimulus: function() {
-    const videoSrc = window.VIDEO_SOURCE || 'media/main_video.mp4';
     return `
-      <div style="max-width: 720px; margin: 0 auto;">
-        <video id="stimulus-video" width="100%" controls playsinline>
+      <div style="max-width: 760px; margin: 0 auto;">
+        <video id="stimulus-video" width="100%" controls playsinline autoplay>
           <source src="${videoSrc}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
@@ -172,31 +209,12 @@ const video_trial = {
     `;
   },
   choices: ['Video Finished - Proceed / 影片結束，下一步'],
-  data: { phase: 'video_presentation' }
+  data: { phase: 'video_presentation', video_source: videoSrc }
 };
 timeline.push(video_trial);
 
 // ==========================================
-// 4. Audio Items Configuration (14 Stimuli)
-// ==========================================
-const audio_items = [
-  { audio: 'media/excerpt_1.mp3',  item_id: 1,  target_word: 'word1', in_video: true },
-  { audio: 'media/excerpt_2.mp3',  item_id: 2,  target_word: 'word2', in_video: true },
-  { audio: 'media/excerpt_3.mp3',  item_id: 3,  target_word: 'word3', in_video: false },
-  { audio: 'media/excerpt_4.mp3',  item_id: 4,  target_word: 'word4', in_video: true },
-  { audio: 'media/excerpt_5.mp3',  item_id: 5,  target_word: 'word5', in_video: false },
-  { audio: 'media/excerpt_6.mp3',  item_id: 6,  target_word: 'word6', in_video: true },
-  { audio: 'media/excerpt_7.mp3',  item_id: 7,  target_word: 'word7', in_video: true },
-  { audio: 'media/excerpt_8.mp3',  item_id: 8,  target_word: 'word8', in_video: false },
-  { audio: 'media/excerpt_9.mp3',  item_id: 9,  target_word: 'word9', in_video: true },
-  { audio: 'media/excerpt_10.mp3', item_id: 10, target_word: 'word10', in_video: false },
-  { audio: 'media/excerpt_11.mp3', item_id: 11, target_word: 'word11', in_video: true },
-  { audio: 'media/excerpt_12.mp3', item_id: 12, target_word: 'word12', in_video: false },
-  { audio: 'media/excerpt_13.mp3', item_id: 13, target_word: 'word13', in_video: true },
-];
-
-// ==========================================
-// Combined Audio Player + Dual Questions
+// 5. Audio Player + 6-Point Confidence Rating + Translation
 // ==========================================
 const audio_combined_trial = {
   type: jsPsychSurveyHtmlForm,
@@ -204,51 +222,83 @@ const audio_combined_trial = {
     const audioSrc = jsPsych.evaluateTimelineVariable('audio');
 
     return `
-      <div style="text-align: left; max-width: 650px; margin: 0 auto; font-family: sans-serif; font-size: 1.05rem; line-height: 1.6;">
+      <div style="text-align: left; max-width: 680px; margin: 0 auto; font-family: sans-serif; font-size: 1rem; line-height: 1.6;">
         
         <!-- Hidden input tracking play count -->
         <input type="hidden" id="audio_play_count" name="audio_play_count" value="0">
 
-        <!-- Audio Player Container -->
-        <div style="text-align: center; margin-bottom: 25px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+        <!-- Audio Player Container with 2-Play Enforcement -->
+        <div style="text-align: center; margin-bottom: 25px; padding: 16px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
           <p style="margin: 0 0 10px 0; font-weight: bold; color: #333;">🎧 Audio Excerpt / 音檔播放</p>
           <audio 
             id="audio_player" 
             controls 
             controlslist="nodownload" 
             preload="auto" 
-            style="width: 100%; max-width: 400px;"
-            onplay="document.getElementById('audio_play_count').value = parseInt(document.getElementById('audio_play_count').value) + 1;"
+            style="width: 100%; max-width: 420px;"
+            onplay="
+              var countInput = document.getElementById('audio_play_count');
+              var currentCount = parseInt(countInput.value, 10) + 1;
+              countInput.value = currentCount;
+              var notice = document.getElementById('play_notice');
+              if (currentCount >= 2) {
+                this.removeAttribute('controls');
+                notice.innerHTML = '<span style=\\'color: #d9534f; font-weight: bold;\\'>Replay limit reached (2/2) / 已達播放上限（2次）</span>';
+              } else {
+                notice.innerText = 'Plays remaining: ' + (2 - currentCount) + ' / 剩餘播放次數：' + (2 - currentCount);
+              }
+            "
           >
             <source src="${audioSrc}" type="audio/mpeg">
             Your browser does not support the audio element.
           </audio>
-          <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #666;">You may replay the audio as many times as needed. / 您可以重複聆聽。</p>
-        </div>
-
-        <!-- Question 1: Recognition Choice -->
-        <div style="margin-bottom: 24px;">
-          <p style="font-weight: bold; margin-bottom: 12px;">
-            1. Did the word appear in the video you just watched?<br>
-            <span style="font-weight: normal; color: #444;">你剛剛觀看的影片裡出現過這個詞嗎？</span>
+          <p id="play_notice" style="margin: 8px 0 0 0; font-size: 0.85rem; color: #666;">
+            Maximum 2 plays allowed / 最多可播放 2 次
           </p>
-          <label style="display: block; margin: 8px 0; cursor: pointer;">
-            <input type="radio" name="recognition" value="Yes" required> Yes 聽到
-          </label>
-          <label style="display: block; margin: 8px 0; cursor: pointer;">
-            <input type="radio" name="recognition" value="No" required> No 沒聽到
-          </label>
-          <label style="display: block; margin: 8px 0; cursor: pointer;">
-            <input type="radio" name="recognition" value="Not sure" required> Not sure 沒有把握
-          </label>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid #ddd; margin: 20px 0;">
+        <!-- Question 1: 6-Point Confidence Scale -->
+        <div style="margin-bottom: 24px;">
+          <p style="font-weight: bold; margin-bottom: 6px;">
+            [Stage 1: Form Recognition] “Did you hear this word in the video?"<br>
+            <span style="font-weight: normal; color: #333;">你在影片裡聽到這個詞了嗎？</span>
+          </p>
+          <p style="font-size: 0.85rem; color: #666; margin: 0 0 12px 0;">(6-point scale: Definitely No ── Definitely Yes / 肯定不在 ── 肯定在)</p>
+          
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-left: 4px;">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <input type="radio" name="recognition_scale" value="1" required>
+              <span><strong>1</strong> = Definitely Not in Video 肯定不在影片中</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <input type="radio" name="recognition_scale" value="2" required>
+              <span><strong>2</strong> = Probably Not in Video 可能不在影片中</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <input type="radio" name="recognition_scale" value="3" required>
+              <span><strong>3</strong> = Guessing Not in Video 猜測不在影片中</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <input type="radio" name="recognition_scale" value="4" required>
+              <span><strong>4</strong> = Guessing in Video 猜測在影片中</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <input type="radio" name="recognition_scale" value="5" required>
+              <span><strong>5</strong> = Probably in Video 可能在影片中</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <input type="radio" name="recognition_scale" value="6" required>
+              <span><strong>6</strong> = Definitely in Video 肯定在影片中</span>
+            </label>
+          </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 24px 0;">
 
         <!-- Question 2: Translation Short Answer -->
         <div style="margin-bottom: 24px;">
-          <p style="font-weight: bold; margin-bottom: 12px;">
-            2. Write the Mandarin translation of the key word.<br>
+          <p style="font-weight: bold; margin-bottom: 8px;">
+            Write the Mandarin translation of the key word.<br>
             <span style="font-weight: normal; color: #444;">寫出關鍵字的國語翻譯：</span>
           </p>
           <input 
@@ -271,17 +321,18 @@ const audio_combined_trial = {
     item_id: jsPsych.timelineVariable('item_id'),
     audio_file: jsPsych.timelineVariable('audio'),
     target_word: jsPsych.timelineVariable('target_word'),
+    word_type: jsPsych.timelineVariable('word_type'),
     appeared_in_video: jsPsych.timelineVariable('in_video')
   },
   on_finish: function(data) {
-    data.recognition_response = data.response.recognition;
+    data.recognition_rating = parseInt(data.response.recognition_scale, 10);
     data.mandarin_translation = data.response.mandarin_translation;
     data.audio_play_count = parseInt(data.response.audio_play_count, 10);
     data.time_spent_seconds = (data.rt / 1000).toFixed(2);
   }
 };
 
-// Procedure
+// Procedure with randomized item presentation
 const audio_procedure = {
   timeline: [audio_combined_trial],
   timeline_variables: audio_items,
@@ -290,14 +341,12 @@ const audio_procedure = {
 timeline.push(audio_procedure);
 
 // ==========================================
-// 5. DataPipe Save & Completion Screen
+// 6. DataPipe Save & Completion Screen
 // ==========================================
-
-// Send data to DataPipe before the debrief
 const save_data = {
   type: jsPsychPipe,
   action: "save",
-  experiment_id: "Dkh9QFetwDLM",
+  experiment_id: "Dkh9QFetwDLM", // Your DataPipe ID
   filename: filename,
   data_string: () => jsPsych.data.get().csv()
 };
