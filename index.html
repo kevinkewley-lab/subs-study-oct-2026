@@ -2,32 +2,26 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Loading Experiment...</title>
-  <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
+  <title>Redirecting...</title>
   <script>
-    async function assignCondition() {
-      const experimentID = "YOUR_DATAPIPE_EXPERIMENT_ID";
+    // 3-way random split (~33.3% probability each)
+    const rand = Math.random();
+    let target = "no_subs.html";
 
-      try {
-        // DataPipe returns 0 or 1 sequentially to balance groups
-        const condition = await jsPsychPipe.getCondition(experimentID);
-        
-        const target = condition === 0 ? "english.html" : "chinese.html";
-        const currentParams = window.location.search;
-
-        window.location.replace(target + currentParams);
-      } catch (error) {
-        // Fallback to random if there is any network issue fetching the count
-        console.error("DataPipe counter error, falling back to random:", error);
-        const fallbackTarget = Math.random() < 0.5 ? "english.html" : "chinese.html";
-        window.location.replace(fallbackTarget + window.location.search);
-      }
+    if (rand < 0.3333) {
+      target = "english.html";
+    } else if (rand < 0.6666) {
+      target = "chinese.html";
     }
 
-    assignCondition();
+    // Preserve any URL parameters (e.g. subject IDs)
+    const currentParams = window.location.search;
+    window.location.replace(target + currentParams);
   </script>
 </head>
 <body>
-  <p>Assigning session, please wait...</p>
+  <p style="font-family: sans-serif; text-align: center; margin-top: 20%;">
+    Assigning condition, please wait...
+  </p>
 </body>
 </html>
