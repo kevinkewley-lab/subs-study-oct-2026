@@ -263,24 +263,76 @@ const instructions = {
 timeline.push(instructions);
 
 // ==========================================
-// 4. Video Presentation
+// 4. Video Presentation (Enforced Full Watch)
 // ==========================================
 const video_trial = {
   type: jsPsychHtmlButtonResponse,
   stimulus: function() {
     return `
-      <div style="max-width: 760px; margin: 0 auto; text-align: center; font-family: sans-serif;">
-        <video id="stimulus-video" width="100%" controls playsinline preload="metadata">
+      <div style="max-width: 760px; margin: 0 auto; text-align: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        <!-- controlslist="nodownload noplaybackrate" prevents downloading or speed changing -->
+        <video 
+          id="stimulus-video" 
+          width="100%" 
+          controls 
+          playsinline 
+          preload="auto"
+          controlslist="nodownload noplaybackrate"
+          style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"
+        >
           <source src="${videoSrc}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
-        <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">
-          Click the play button (▶) above to start the video. / 請點擊上方播放按鈕開始觀看。
+        <p id="video-instruction" style="margin-top: 14px; font-size: 0.95rem; color: #4a5568; font-weight: 500;">
+          ▶ Please click play to watch the entire video. The proceed button will appear once the video finishes.<br>
+          <span style="font-size: 0.85rem; color: #718096;">請點擊播放並完整觀看影片。影片播放完畢後方可進行下一步。</span>
         </p>
       </div>
     `;
   },
   choices: ['Video Finished - Proceed / 影片結束，下一步'],
+  on_load: function() {
+    const video = document.getElementById('stimulus-video');
+    const button = document.querySelector('.jspsych-btn');
+    const instruction = document.getElementById('video-instruction');
+
+    // 1. Hide the proceed button immediately on load
+    if (button) {
+      button.style.display = 'none';
+    }
+
+    // 2. Prevent skipping/scrubbing forward
+    let maxTimeReached = 0;
+    video.addEventListener('timeupdate', function() {
+      if (!video.seeking) {
+        if (video.currentTime > maxTimeReached) {
+          maxTimeReached = video.currentTime;
+        }
+      }
+    });
+
+    video.addEventListener('seeking', function() {
+      // If user tries to scrub past what they have actually watched, snap them back
+      if (video.currentTime > maxTimeReached) {
+        video.currentTime = maxTimeReached;
+      }
+    });
+
+    // 3. Reveal and activate button only when video ends
+    video.addEventListener('ended', function() {
+      if (button) {
+        button.style.display = 'inline-block';
+        button.scrollIntoView({ behavior: 'smooth' });
+      }
+      if (instruction) {
+        instruction.innerHTML = `
+          <span style="color: #2b6cb0; font-weight: bold;">
+            ✓ Video completed. Click below to continue. / 影片已播放完畢，請點擊下方按鈕繼續。
+          </span>
+        `;
+      }
+    });
+  },
   data: { phase: 'video_presentation', video_source: videoSrc }
 };
 timeline.push(video_trial);
