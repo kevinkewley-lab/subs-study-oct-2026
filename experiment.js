@@ -346,8 +346,12 @@ timeline.push(audio_procedure);
 // ==========================================
 // 6. DataPipe Save & Completion Screen
 // ==========================================
+const pipePlugin = typeof jsPsychPipe !== 'undefined' 
+  ? jsPsychPipe 
+  : window['@jspsych-community/plugin-pipe'] || window.jsPsychPipe;
+
 const save_data = {
-  type: jsPsychPipe,
+  type: pipePlugin,
   action: "save",
   experiment_id: "Dkh9QFetwDLM", // Your DataPipe ID
   filename: filename,
