@@ -346,14 +346,16 @@ timeline.push(audio_procedure);
 // ==========================================
 // 6. DataPipe Save & Completion Screen
 // ==========================================
-const pipePlugin = typeof jsPsychPipe !== 'undefined' 
-  ? jsPsychPipe 
-  : window['@jspsych-community/plugin-pipe'] || window.jsPsychPipe;
+
+// Safely detect the DataPipe plugin regardless of how the CDN exposed it
+const pipePlugin = (typeof jsPsychPipe !== 'undefined')
+  ? jsPsychPipe
+  : (window.jsPsychPipe || window['@jspsych-community/plugin-pipe'] || window.pipe);
 
 const save_data = {
   type: pipePlugin,
   action: "save",
-  experiment_id: "Dkh9QFetwDLM", // Your DataPipe ID
+  experiment_id: "Dkh9QFetwDLM",
   filename: filename,
   data_string: () => jsPsych.data.get().csv()
 };
