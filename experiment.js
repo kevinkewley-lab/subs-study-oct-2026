@@ -27,24 +27,24 @@ const timeline = [];
 // ==========================================
 const audio_items = [
   // Real Words (1–8)
-  { audio: 'media/audio/excerpt_1_capsule.mp3',  item_id: 1,  target_word: 'capsule',  word_type: 'real',        in_video: true },
-  { audio: 'media/audio/excerpt_2_plans.mp3',    item_id: 2,  target_word: 'plans',    word_type: 'real',        in_video: true },
-  { audio: 'media/audio/excerpt_3_engineer.mp3', item_id: 3,  target_word: 'engineer', word_type: 'real',        in_video: true },
-  { audio: 'media/audio/excerpt_4_space.mp3',    item_id: 4,  target_word: 'space',    word_type: 'real',        in_video: true },
-  { audio: 'media/audio/excerpt_5_base.mp3',     item_id: 5,  target_word: 'base',     word_type: 'real',        in_video: false },
-  { audio: 'media/audio/excerpt_6_star.mp3',     item_id: 6,  target_word: 'star',     word_type: 'real',        in_video: false },
-  { audio: 'media/audio/excerpt_7_office.mp3',   item_id: 7,  target_word: 'office',   word_type: 'real',        in_video: false },
-  { audio: 'media/audio/excerpt_8_screen.mp3',   item_id: 8,  target_word: 'screen',   word_type: 'real',        in_video: false },
+  { audio: 'media/excerpt_1_capsule.mp3',  item_id: 1,  target_word: 'capsule',  word_type: 'real',        in_video: true },
+  { audio: 'media/excerpt_2_plans.mp3',    item_id: 2,  target_word: 'plans',    word_type: 'real',        in_video: true },
+  { audio: 'media/excerpt_3_engineer.mp3', item_id: 3,  target_word: 'engineer', word_type: 'real',        in_video: true },
+  { audio: 'media/excerpt_4_space.mp3',    item_id: 4,  target_word: 'space',    word_type: 'real',        in_video: true },
+  { audio: 'media/excerpt_5_base.mp3',     item_id: 5,  target_word: 'base',     word_type: 'real',        in_video: false },
+  { audio: 'media/excerpt_6_star.mp3',     item_id: 6,  target_word: 'star',     word_type: 'real',        in_video: false },
+  { audio: 'media/excerpt_7_office.mp3',   item_id: 7,  target_word: 'office',   word_type: 'real',        in_video: false },
+  { audio: 'media/excerpt_8_screen.mp3',   item_id: 8,  target_word: 'screen',   word_type: 'real',        in_video: false },
 
   // Pseudowords (9–16)
-  { audio: 'media/audio/excerpt_9_vord.mp3',     item_id: 9,  target_word: 'vord',     word_type: 'pseudoword',  in_video: true },
-  { audio: 'media/audio/excerpt_10_ozrek.mp3',   item_id: 10, target_word: 'ozrek',    word_type: 'pseudoword',  in_video: true },
-  { audio: 'media/audio/excerpt_11_florns.mp3',  item_id: 11, target_word: 'florns',   word_type: 'pseudoword',  in_video: true },
-  { audio: 'media/audio/excerpt_12_nemvo.mp3',   item_id: 12, target_word: 'nemvo',    word_type: 'pseudoword',  in_video: true },
-  { audio: 'media/audio/excerpt_13_onk.mp3',     item_id: 13, target_word: 'onk',      word_type: 'pseudoword',  in_video: false },
-  { audio: 'media/audio/excerpt_14_nuggy.mp3',   item_id: 14, target_word: 'nuggy',    word_type: 'pseudoword',  in_video: false },
-  { audio: 'media/audio/excerpt_15_vulling.mp3', item_id: 15, target_word: 'vulling',  word_type: 'pseudoword',  in_video: false },
-  { audio: 'media/audio/excerpt_16_frask.mp3',   item_id: 16, target_word: 'frask',    word_type: 'pseudoword',  in_video: false }
+  { audio: 'media/excerpt_9_vord.mp3',     item_id: 9,  target_word: 'vord',     word_type: 'pseudoword',  in_video: true },
+  { audio: 'media/excerpt_10_ozrek.mp3',   item_id: 10, target_word: 'ozrek',    word_type: 'pseudoword',  in_video: true },
+  { audio: 'media/excerpt_11_florns.mp3',  item_id: 11, target_word: 'florns',   word_type: 'pseudoword',  in_video: true },
+  { audio: 'media/excerpt_12_nemvo.mp3',   item_id: 12, target_word: 'nemvo',    word_type: 'pseudoword',  in_video: true },
+  { audio: 'media/excerpt_13_onk.mp3',     item_id: 13, target_word: 'onk',      word_type: 'pseudoword',  in_video: false },
+  { audio: 'media/excerpt_14_nuggy.mp3',   item_id: 14, target_word: 'nuggy',    word_type: 'pseudoword',  in_video: false },
+  { audio: 'media/excerpt_15_vulling.mp3', item_id: 15, target_word: 'vulling',  word_type: 'pseudoword',  in_video: false },
+  { audio: 'media/excerpt_16_frask.mp3',   item_id: 16, target_word: 'frask',    word_type: 'pseudoword',  in_video: false }
 ];
 
 // Preload stimuli
