@@ -58,17 +58,70 @@ const preload = {
 timeline.push(preload);
 
 // ==========================================
-// 2. Participant Details Form
+// 2. Academic Information & Informed Consent Form
 // ==========================================
 const participant_info = {
   type: jsPsychSurveyHtmlForm,
   html: `
-    <div style="text-align: left; max-width: 520px; margin: 0 auto; font-family: sans-serif; font-size: 1rem; line-height: 1.5;">
-      <h2 style="text-align: center; margin-bottom: 24px;">Participant Information / 受試者基本資料</h2>
+    <div style="text-align: left; max-width: 640px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 0.95rem; line-height: 1.6; color: #2d3748;">
+      
+      <!-- Academic Header & Details Box -->
+      <div style="background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: #1a202c; margin: 0 0 12px 0; text-align: center; line-height: 1.4;">
+          The Influence of Subtitles on Novel Word Recall and Recognition in L2 English
+        </h2>
+        <p style="font-size: 0.88rem; color: #4a5568; margin: 0 0 16px 0; text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+          <strong>Principal Investigator:</strong> Kevin Kewley<br>
+          <span style="color: #718096;">Department of Speech Communication / English, Shih Hsin University</span>
+        </p>
+
+        <!-- Purpose -->
+        <div style="margin-bottom: 14px;">
+          <strong style="color: #2b6cb0;">Purpose of the Study / 研究目的：</strong>
+          <p style="margin: 4px 0 0 0;">This study investigates how second language learners comprehend and process English multimedia content.</p>
+          <p style="margin: 2px 0 0 0; color: #4a5568;">本研究旨在探討第二語言學習者如何理解和處理英語多媒體內容。</p>
+        </div>
+
+        <!-- What You Will Do -->
+        <div style="margin-bottom: 14px;">
+          <strong style="color: #2b6cb0;">What You Will Do / 您將參與的活動：</strong>
+          <p style="margin: 4px 0 0 0;">You will watch a short English video clip and answer follow-up questions related to the video and language comprehension. The total session takes approximately 10–15 minutes.</p>
+          <p style="margin: 2px 0 0 0; color: #4a5568;">您將觀看一段英語短視頻，並回答與視頻內容及語言理解相關的問題。整個過程大約需要 10 到 15 分鐘。</p>
+        </div>
+
+        <!-- Voluntary Participation & Anonymity -->
+        <div>
+          <strong style="color: #2b6cb0;">Voluntary Participation & Anonymity / 自願參與與匿名性：</strong>
+          <p style="margin: 4px 0 0 0;">Your participation is entirely voluntary. You may discontinue the session at any point without penalty or any impact on your academic standing or course grades. All collected responses are strictly confidential, anonymized via participant ID numbers, and reported only in aggregate academic summaries.</p>
+          <p style="margin: 2px 0 0 0; color: #4a5568;">您的參與完全出於自願。您可以隨時終止參與，且不會因此受到任何懲罰，也不會影響您的學籍狀況或課程成績。所有收集到的回應均嚴格保密，透過參與者編號進行匿名化處理，並僅以匯總後的學術摘要形式進行報告。</p>
+        </div>
+      </div>
+
+      <!-- Informed Consent Radio -->
+      <div style="margin-bottom: 24px; padding: 16px; background: #fffaf0; border: 1px solid #feebc8; border-radius: 6px;">
+        <p style="font-weight: bold; margin: 0 0 10px 0; color: #7b341e;">
+          Do you agree to take part in this study? / 您是否同意參與本研究？
+        </p>
+        <label style="display: block; margin-bottom: 10px; cursor: pointer;">
+          <input type="radio" name="consent" value="agreed" required style="margin-right: 8px;">
+          <span><strong>I am at least 18 years old, understand the terms, and agree to participate.</strong><br>
+          <span style="color: #555; font-size: 0.9rem;">我已年滿18歲，了解相關條款，並同意參與。</span></span>
+        </label>
+        <label style="display: block; cursor: pointer;">
+          <input type="radio" name="consent" value="declined" required style="margin-right: 8px;">
+          <span><strong>I do not wish to participate.</strong><br>
+          <span style="color: #555; font-size: 0.9rem;">我不願參與。</span></span>
+        </label>
+      </div>
+
+      <!-- Participant Demographic Details -->
+      <h3 style="font-size: 1.05rem; border-bottom: 2px solid #edf2f7; padding-bottom: 6px; margin: 0 0 18px 0; color: #2d3748;">
+        Participant Details / 受試者資料
+      </h3>
 
       <!-- Participant ID -->
-      <div style="margin-bottom: 20px;">
-        <label for="p_id" style="font-weight: bold; display: block; margin-bottom: 6px;">
+      <div style="margin-bottom: 18px;">
+        <label for="p_id" style="font-weight: bold; display: block; margin-bottom: 4px;">
           Participant ID / 代號:
         </label>
         <input 
@@ -77,42 +130,42 @@ const participant_info = {
           name="participant_id" 
           required 
           autocomplete="off"
-          placeholder="e.g. A115123456"
-          style="width: 100%; padding: 8px; border: 1px solid #aaa; border-radius: 4px; box-sizing: border-box;"
+          placeholder="e.g., A115123456"
+          style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box;"
         />
       </div>
 
       <!-- Age -->
-      <div style="margin-bottom: 20px;">
-        <label for="age" style="font-weight: bold; display: block; margin-bottom: 6px;">
+      <div style="margin-bottom: 18px;">
+        <label for="age" style="font-weight: bold; display: block; margin-bottom: 4px;">
           Age / 年齡:
         </label>
         <input 
           type="number" 
           id="age" 
           name="age" 
-          min="1" 
+          min="18" 
           max="120" 
           required 
-          style="width: 100%; padding: 8px; border: 1px solid #aaa; border-radius: 4px; box-sizing: border-box;"
           placeholder="e.g., 20"
+          style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box;"
         />
       </div>
 
       <!-- Sex -->
-      <div style="margin-bottom: 20px;">
-        <p style="font-weight: bold; margin: 0 0 8px 0;">Sex / 性別:</p>
-        <label style="display: inline-block; margin-right: 20px; cursor: pointer;">
-          <input type="radio" name="sex" value="Male" required> Male 男
+      <div style="margin-bottom: 18px;">
+        <p style="font-weight: bold; margin: 0 0 6px 0;">Sex / 性別:</p>
+        <label style="display: inline-block; margin-right: 24px; cursor: pointer;">
+          <input type="radio" name="sex" value="Male" required style="margin-right: 4px;"> Male 男
         </label>
         <label style="display: inline-block; cursor: pointer;">
-          <input type="radio" name="sex" value="Female" required> Female 女
+          <input type="radio" name="sex" value="Female" required style="margin-right: 4px;"> Female 女
         </label>
       </div>
 
       <!-- Native Language -->
       <div style="margin-bottom: 24px;">
-        <p style="font-weight: bold; margin: 0 0 8px 0;">Native Language / 母語:</p>
+        <p style="font-weight: bold; margin: 0 0 6px 0;">Native Language / 母語:</p>
         
         <label style="display: block; margin-bottom: 8px; cursor: pointer;">
           <input 
@@ -121,6 +174,7 @@ const participant_info = {
             value="Mandarin" 
             required 
             onclick="document.getElementById('other_lang_input').required = false; document.getElementById('other_lang_box').style.display = 'none';"
+            style="margin-right: 6px;"
           > Mandarin 中文
         </label>
 
@@ -131,6 +185,7 @@ const participant_info = {
             value="English" 
             required 
             onclick="document.getElementById('other_lang_input').required = false; document.getElementById('other_lang_box').style.display = 'none';"
+            style="margin-right: 6px;"
           > English 英文
         </label>
 
@@ -141,7 +196,8 @@ const participant_info = {
             value="Other" 
             required 
             onclick="document.getElementById('other_lang_input').required = true; document.getElementById('other_lang_box').style.display = 'block';"
-          > Other (please state) 其他（請註明）
+            style="margin-right: 6px;"
+          > Other (please specify) 其他（請註明）
         </label>
 
         <div id="other_lang_box" style="display: none; margin-left: 24px; margin-top: 8px;">
@@ -150,7 +206,7 @@ const participant_info = {
             id="other_lang_input" 
             name="other_language_specified" 
             placeholder="Please specify / 請填寫母語"
-            style="width: 100%; padding: 8px; border: 1px solid #aaa; border-radius: 4px; box-sizing: border-box;"
+            style="width: 100%; padding: 8px 10px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box;"
           />
         </div>
       </div>
@@ -161,11 +217,25 @@ const participant_info = {
   on_finish: function (data) {
     const responses = data.response;
 
+    // Handle withdrawal / declined consent immediately
+    if (responses.consent === 'declined') {
+      jsPsych.endExperiment(`
+        <div style="max-width: 600px; margin: 40px auto; font-family: sans-serif; line-height: 1.6; text-align: center;">
+          <h3>Study Exited / 已終止參與</h3>
+          <p>You have chosen not to participate in this study. No data has been recorded.</p>
+          <p>您已選擇不參與本研究，系統未記錄任何資料。您可以直接關閉此視窗。</p>
+        </div>
+      `);
+      return;
+    }
+
     const finalLanguage = responses.native_language === 'Other' && responses.other_language_specified
       ? responses.other_language_specified.trim()
       : responses.native_language;
 
+    // Append metadata to every subsequent trial row in the DataPipe CSV
     jsPsych.data.addProperties({
+      consent_given: responses.consent === 'agreed',
       participant_id: responses.participant_id,
       age: responses.age,
       sex: responses.sex,
@@ -174,7 +244,6 @@ const participant_info = {
   }
 };
 timeline.push(participant_info);
-
 // ==========================================
 // 3. Instructions Screen
 // ==========================================
